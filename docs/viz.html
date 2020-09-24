@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>src.viz API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>src.viz</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from math import sqrt
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+from .config import DIR_FIGS
+
+
+def savefig(fname):
+    if &#39;.&#39; in fname:
+        print(&#39;filename should not contain extension!&#39;)
+    if not fname.startswith(&#39;fig_&#39;):
+        fname = &#39;fig_&#39; + fname
+    os.makedirs(DIR_FIGS, exist_ok=True)
+
+    plt.tight_layout()
+    plt.savefig(oj(DIR_FIGS, fname) + &#39;.pdf&#39;, bbox_inches=&#39;tight&#39;)
+    plt.savefig(oj(DIR_FIGS, fname) + &#39;.png&#39;, dpi=300, bbox_inches=&#39;tight&#39;)
+
+
+def corrplot(corrs):
+    mask = np.triu(np.ones_like(corrs, dtype=np.bool))
+    corrs[mask] = np.nan
+    max_abs = np.nanmax(np.abs(corrs))
+    plt.imshow(corrs, cmap=style.cmap_div, vmax=max_abs, vmin=-max_abs)
+
+
+def plot_row(images, annot_list: list = None, dpi: int = 100,
+             suptitle: str = None, ylab: str = None, fontsize_ylab=25):
+    &#39;&#39;&#39;
+    Params
+    ------
+    images: np.ndarray
+        (num_images, H, W, C)
+    &#39;&#39;&#39;
+
+    # deal with inputs
+    if type(images) == list:
+        N_IMS = len(images)
+    else:
+        N_IMS = images.shape[0]
+    if annot_list is None:
+        annot_list = [None] * N_IMS
+
+    fig = plt.figure(figsize=(N_IMS * 3, 3), dpi=dpi)
+    for i in range(N_IMS):
+        ax = plt.subplot(1, N_IMS, i + 1)
+        imshow(images[i], annot=annot_list[i])
+        if i == 0:
+            show_ylab(ax, ylab, fontsize_ylab=fontsize_ylab)
+    #             plt.ylabel(ylab, fontsize=fontsize_ylab)
+    #             fig.text(0, 0.5, ylab, rotation=90, va=&#39;center&#39;, fontsize=fontsize_ylab)
+    if suptitle is not None:
+        plt.subplot(1, N_IMS, N_IMS // 2 + 1)
+        plt.title(suptitle)
+    #     if ylab is not None:
+
+    plt.tight_layout()
+
+
+def plot_grid(images, ylabs=[], annot_list=None, suptitle=None, emphasize_col: int = None, fontsize_ylab=25):
+    &#39;&#39;&#39;
+    Params
+    ------
+    images: np.ndarray
+        (R, C, H, W, C)
+    emphasize_col
+        which column to emphasize (by not removing black border)
+    &#39;&#39;&#39;
+
+    # deal with inputs
+    if type(images) == list:
+        images = np.array(images)
+    #     print(images.shape)
+    # check if wasn&#39;t passed a grid
+    if len(images.shape) == 4:
+        N_IMS = images.shape[0]
+        R = int(np.sqrt(N_IMS))
+        C = R + 1
+    else:
+        R = images.shape[0]
+        C = images.shape[1]
+        N_IMS = R * C
+        # reshape to be (R * C, H, W, C)
+        images = images.reshape((R * C, *images.shape[2:]))
+    if annot_list is None:
+        annot_list = [None] * N_IMS
+
+    i = 0
+    fig = plt.figure(figsize=(C * 3, R * 3))
+    for r in range(R):
+        for c in range(C):
+            ax = plt.subplot(R, C, i + 1)
+            imshow(images[r * C + c], annot=annot_list[i])
+
+            if c == 0 and len(ylabs) &gt; r:
+                show_ylab(ax, ylabs[r], fontsize_ylab=fontsize_ylab)
+
+            i += 1
+            if i &gt;= images.shape[0]:
+                break
+
+            if c == emphasize_col:
+                emphasize_box(ax)
+
+    if suptitle is not None:
+        fig.text(0.5, 1, suptitle, ha=&#39;center&#39;)
+
+    &#39;&#39;&#39;
+    if ylabs is not None:
+        for r in range(R):
+            fig.text(0, r / R + 0.5 / R, ylabs[R - 1 - r], rotation=90,
+                         va=&#39;center&#39;, fontsize=fontsize_ylab)
+    &#39;&#39;&#39;
+    fig.tight_layout()
+
+
+def show_ylab(ax, ylab, fontsize_ylab):
+    plt.axis(&#39;on&#39;)
+    ax.get_yaxis().set_ticks([])
+    ax.get_xaxis().set_ticks([])
+    for x in [&#39;right&#39;, &#39;top&#39;, &#39;bottom&#39;, &#39;left&#39;]:
+        ax.spines[x].set_visible(False)
+    plt.ylabel(ylab, fontsize=fontsize_ylab)
+
+
+def emphasize_box(ax):
+    plt.axis(&#39;on&#39;)
+    ax.get_yaxis().set_ticks([])
+    ax.get_xaxis().set_ticks([])
+    for x in [&#39;right&#39;, &#39;top&#39;, &#39;bottom&#39;, &#39;left&#39;]:
+        ax.spines[x].set_visible(True)
+        ax.spines[x].set_linewidth(3)  # [&#39;linewidth&#39;] = 10
+
+
+#         [i.set_linewidth(0.1) for i in ax.spines.itervalues()]
+#     ax.spines[&#39;top&#39;].set_visible(True)
+
+
+def norm(im):
+    &#39;&#39;&#39;Normalize to [0, 1]
+    &#39;&#39;&#39;
+    return (im - np.min(im)) / (np.max(im) - np.min(im))  # converts range to [0, 1]
+
+
+def imshow(im, annot: str = None):
+    &#39;&#39;&#39;
+    Params
+    ------
+    annot
+        str to put in top-right corner
+    &#39;&#39;&#39;
+
+    # if 4d, take first image
+    if len(im.shape) &gt; 3:
+        im = im[0]
+
+    # if channels dimension first, transpose
+    if im.shape[0] == 3 and len(im.shape) == 3:
+        im = im.transpose()
+
+    ax = plt.gca()
+    ax.imshow(im)
+    ax.axis(&#39;off&#39;)
+
+    if annot is not None:
+        padding = 5
+        ax.annotate(
+            s=annot,
+            fontsize=12,
+            xy=(0, 0),
+            xytext=(padding - 1, -(padding - 1)),
+            textcoords=&#39;offset pixels&#39;,
+            bbox=dict(facecolor=&#39;white&#39;, alpha=1, pad=padding),
+            va=&#39;top&#39;,
+            ha=&#39;left&#39;)
+
+
+def detach(tensor):
+    return tensor.detach().cpu().numpy()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="src.viz.corrplot"><code class="name flex">
+<span>def <span class="ident">corrplot</span></span>(<span>corrs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def corrplot(corrs):
+    mask = np.triu(np.ones_like(corrs, dtype=np.bool))
+    corrs[mask] = np.nan
+    max_abs = np.nanmax(np.abs(corrs))
+    plt.imshow(corrs, cmap=style.cmap_div, vmax=max_abs, vmin=-max_abs)</code></pre>
+</details>
+</dd>
+<dt id="src.viz.detach"><code class="name flex">
+<span>def <span class="ident">detach</span></span>(<span>tensor)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def detach(tensor):
+    return tensor.detach().cpu().numpy()</code></pre>
+</details>
+</dd>
+<dt id="src.viz.emphasize_box"><code class="name flex">
+<span>def <span class="ident">emphasize_box</span></span>(<span>ax)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def emphasize_box(ax):
+    plt.axis(&#39;on&#39;)
+    ax.get_yaxis().set_ticks([])
+    ax.get_xaxis().set_ticks([])
+    for x in [&#39;right&#39;, &#39;top&#39;, &#39;bottom&#39;, &#39;left&#39;]:
+        ax.spines[x].set_visible(True)
+        ax.spines[x].set_linewidth(3)  # [&#39;linewidth&#39;] = 10</code></pre>
+</details>
+</dd>
+<dt id="src.viz.imshow"><code class="name flex">
+<span>def <span class="ident">imshow</span></span>(<span>im, annot=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="params">Params</h2>
+<dl>
+<dt><strong><code>annot</code></strong></dt>
+<dd>str to put in top-right corner</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def imshow(im, annot: str = None):
+    &#39;&#39;&#39;
+    Params
+    ------
+    annot
+        str to put in top-right corner
+    &#39;&#39;&#39;
+
+    # if 4d, take first image
+    if len(im.shape) &gt; 3:
+        im = im[0]
+
+    # if channels dimension first, transpose
+    if im.shape[0] == 3 and len(im.shape) == 3:
+        im = im.transpose()
+
+    ax = plt.gca()
+    ax.imshow(im)
+    ax.axis(&#39;off&#39;)
+
+    if annot is not None:
+        padding = 5
+        ax.annotate(
+            s=annot,
+            fontsize=12,
+            xy=(0, 0),
+            xytext=(padding - 1, -(padding - 1)),
+            textcoords=&#39;offset pixels&#39;,
+            bbox=dict(facecolor=&#39;white&#39;, alpha=1, pad=padding),
+            va=&#39;top&#39;,
+            ha=&#39;left&#39;)</code></pre>
+</details>
+</dd>
+<dt id="src.viz.norm"><code class="name flex">
+<span>def <span class="ident">norm</span></span>(<span>im)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Normalize to [0, 1]</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def norm(im):
+    &#39;&#39;&#39;Normalize to [0, 1]
+    &#39;&#39;&#39;
+    return (im - np.min(im)) / (np.max(im) - np.min(im))  # converts range to [0, 1]</code></pre>
+</details>
+</dd>
+<dt id="src.viz.plot_grid"><code class="name flex">
+<span>def <span class="ident">plot_grid</span></span>(<span>images, ylabs=[], annot_list=None, suptitle=None, emphasize_col=None, fontsize_ylab=25)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="params">Params</h2>
+<dl>
+<dt><strong><code>images</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>(R, C, H, W, C)</dd>
+<dt><strong><code>emphasize_col</code></strong></dt>
+<dd>which column to emphasize (by not removing black border)</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_grid(images, ylabs=[], annot_list=None, suptitle=None, emphasize_col: int = None, fontsize_ylab=25):
+    &#39;&#39;&#39;
+    Params
+    ------
+    images: np.ndarray
+        (R, C, H, W, C)
+    emphasize_col
+        which column to emphasize (by not removing black border)
+    &#39;&#39;&#39;
+
+    # deal with inputs
+    if type(images) == list:
+        images = np.array(images)
+    #     print(images.shape)
+    # check if wasn&#39;t passed a grid
+    if len(images.shape) == 4:
+        N_IMS = images.shape[0]
+        R = int(np.sqrt(N_IMS))
+        C = R + 1
+    else:
+        R = images.shape[0]
+        C = images.shape[1]
+        N_IMS = R * C
+        # reshape to be (R * C, H, W, C)
+        images = images.reshape((R * C, *images.shape[2:]))
+    if annot_list is None:
+        annot_list = [None] * N_IMS
+
+    i = 0
+    fig = plt.figure(figsize=(C * 3, R * 3))
+    for r in range(R):
+        for c in range(C):
+            ax = plt.subplot(R, C, i + 1)
+            imshow(images[r * C + c], annot=annot_list[i])
+
+            if c == 0 and len(ylabs) &gt; r:
+                show_ylab(ax, ylabs[r], fontsize_ylab=fontsize_ylab)
+
+            i += 1
+            if i &gt;= images.shape[0]:
+                break
+
+            if c == emphasize_col:
+                emphasize_box(ax)
+
+    if suptitle is not None:
+        fig.text(0.5, 1, suptitle, ha=&#39;center&#39;)
+
+    &#39;&#39;&#39;
+    if ylabs is not None:
+        for r in range(R):
+            fig.text(0, r / R + 0.5 / R, ylabs[R - 1 - r], rotation=90,
+                         va=&#39;center&#39;, fontsize=fontsize_ylab)
+    &#39;&#39;&#39;
+    fig.tight_layout()</code></pre>
+</details>
+</dd>
+<dt id="src.viz.plot_row"><code class="name flex">
+<span>def <span class="ident">plot_row</span></span>(<span>images, annot_list=None, dpi=100, suptitle=None, ylab=None, fontsize_ylab=25)</span>
+</code></dt>
+<dd>
+<section class="desc"><h2 id="params">Params</h2>
+<dl>
+<dt><strong><code>images</code></strong> :&ensp;<code>np.ndarray</code></dt>
+<dd>(num_images, H, W, C)</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_row(images, annot_list: list = None, dpi: int = 100,
+             suptitle: str = None, ylab: str = None, fontsize_ylab=25):
+    &#39;&#39;&#39;
+    Params
+    ------
+    images: np.ndarray
+        (num_images, H, W, C)
+    &#39;&#39;&#39;
+
+    # deal with inputs
+    if type(images) == list:
+        N_IMS = len(images)
+    else:
+        N_IMS = images.shape[0]
+    if annot_list is None:
+        annot_list = [None] * N_IMS
+
+    fig = plt.figure(figsize=(N_IMS * 3, 3), dpi=dpi)
+    for i in range(N_IMS):
+        ax = plt.subplot(1, N_IMS, i + 1)
+        imshow(images[i], annot=annot_list[i])
+        if i == 0:
+            show_ylab(ax, ylab, fontsize_ylab=fontsize_ylab)
+    #             plt.ylabel(ylab, fontsize=fontsize_ylab)
+    #             fig.text(0, 0.5, ylab, rotation=90, va=&#39;center&#39;, fontsize=fontsize_ylab)
+    if suptitle is not None:
+        plt.subplot(1, N_IMS, N_IMS // 2 + 1)
+        plt.title(suptitle)
+    #     if ylab is not None:
+
+    plt.tight_layout()</code></pre>
+</details>
+</dd>
+<dt id="src.viz.savefig"><code class="name flex">
+<span>def <span class="ident">savefig</span></span>(<span>fname)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def savefig(fname):
+    if &#39;.&#39; in fname:
+        print(&#39;filename should not contain extension!&#39;)
+    if not fname.startswith(&#39;fig_&#39;):
+        fname = &#39;fig_&#39; + fname
+    os.makedirs(DIR_FIGS, exist_ok=True)
+
+    plt.tight_layout()
+    plt.savefig(oj(DIR_FIGS, fname) + &#39;.pdf&#39;, bbox_inches=&#39;tight&#39;)
+    plt.savefig(oj(DIR_FIGS, fname) + &#39;.png&#39;, dpi=300, bbox_inches=&#39;tight&#39;)</code></pre>
+</details>
+</dd>
+<dt id="src.viz.show_ylab"><code class="name flex">
+<span>def <span class="ident">show_ylab</span></span>(<span>ax, ylab, fontsize_ylab)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def show_ylab(ax, ylab, fontsize_ylab):
+    plt.axis(&#39;on&#39;)
+    ax.get_yaxis().set_ticks([])
+    ax.get_xaxis().set_ticks([])
+    for x in [&#39;right&#39;, &#39;top&#39;, &#39;bottom&#39;, &#39;left&#39;]:
+        ax.spines[x].set_visible(False)
+    plt.ylabel(ylab, fontsize=fontsize_ylab)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="src" href="index.html">src</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="src.viz.corrplot" href="#src.viz.corrplot">corrplot</a></code></li>
+<li><code><a title="src.viz.detach" href="#src.viz.detach">detach</a></code></li>
+<li><code><a title="src.viz.emphasize_box" href="#src.viz.emphasize_box">emphasize_box</a></code></li>
+<li><code><a title="src.viz.imshow" href="#src.viz.imshow">imshow</a></code></li>
+<li><code><a title="src.viz.norm" href="#src.viz.norm">norm</a></code></li>
+<li><code><a title="src.viz.plot_grid" href="#src.viz.plot_grid">plot_grid</a></code></li>
+<li><code><a title="src.viz.plot_row" href="#src.viz.plot_row">plot_row</a></code></li>
+<li><code><a title="src.viz.savefig" href="#src.viz.savefig">savefig</a></code></li>
+<li><code><a title="src.viz.show_ylab" href="#src.viz.show_ylab">show_ylab</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
