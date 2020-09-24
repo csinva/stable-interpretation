@@ -6,7 +6,7 @@ cd ../docs
 python style_docs.py
 
 # build readme for nbs
-jupytext --to md ../notebooks/*.py
-jupytext --to md ../notebooks/*.ipynb
+jupytext --to md ../experiments/*.py
+jupytext --to md ../experiments/*.ipynb
 python process_nbs.py
 

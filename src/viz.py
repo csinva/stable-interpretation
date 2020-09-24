@@ -26,7 +26,8 @@ def corrplot(corrs):
 
 
 def plot_row(images, annot_list: list = None, dpi: int = 100,
-             suptitle: str = None, ylab: str = None, fontsize_ylab=25):
+             suptitle: str = None, ylab: str = None, fontsize_ylab=25,
+             normalize=False):
     '''
     Params
     ------
@@ -45,7 +46,7 @@ def plot_row(images, annot_list: list = None, dpi: int = 100,
     fig = plt.figure(figsize=(N_IMS * 3, 3), dpi=dpi)
     for i in range(N_IMS):
         ax = plt.subplot(1, N_IMS, i + 1)
-        imshow(images[i], annot=annot_list[i])
+        imshow(images[i], annot=annot_list[i], normalize=normalize)
         if i == 0:
             show_ylab(ax, ylab, fontsize_ylab=fontsize_ylab)
     #             plt.ylabel(ylab, fontsize=fontsize_ylab)
@@ -140,16 +141,18 @@ def emphasize_box(ax):
 def norm(im):
     '''Normalize to [0, 1]
     '''
-    return (im - np.min(im)) / (np.max(im) - np.min(im))  # converts range to [0, 1]
+    return (im - im.min()) / (im.max() - im.min())  # converts range to [0, 1]
 
 
-def imshow(im, annot: str = None):
+def imshow(im, annot: str = None, normalize=False):
     '''
     Params
     ------
     annot
         str to put in top-right corner
     '''
+    if 'Tensor' in str(type(im)):
+        im = detach(im)
 
     # if 4d, take first image
     if len(im.shape) > 3:
@@ -157,8 +160,12 @@ def imshow(im, annot: str = None):
 
     # if channels dimension first, transpose
     if im.shape[0] == 3 and len(im.shape) == 3:
-        im = im.transpose()
+        im = im.transpose((1, 2, 0))
 
+    # optionally normalize
+    if normalize:
+        im = norm(im)
+        
     ax = plt.gca()
     ax.imshow(im)
     ax.axis('off')
