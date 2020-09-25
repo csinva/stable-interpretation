@@ -1,8 +1,8 @@
 from math import sqrt
-
+import os
 import matplotlib.pyplot as plt
 import numpy as np
-
+from os.path import join as oj
 from .config import DIR_FIGS
 
 
@@ -14,7 +14,7 @@ def savefig(fname):
     os.makedirs(DIR_FIGS, exist_ok=True)
 
     plt.tight_layout()
-    plt.savefig(oj(DIR_FIGS, fname) + '.pdf', bbox_inches='tight')
+#     plt.savefig(oj(DIR_FIGS, fname) + '.pdf', bbox_inches='tight')
     plt.savefig(oj(DIR_FIGS, fname) + '.png', dpi=300, bbox_inches='tight')
 
 
@@ -173,7 +173,7 @@ def imshow(im, annot: str = None, normalize=False):
     if annot is not None:
         padding = 5
         ax.annotate(
-            s=annot,
+            text=annot,
             fontsize=12,
             xy=(0, 0),
             xytext=(padding - 1, -(padding - 1)),

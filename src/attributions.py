@@ -12,7 +12,8 @@ def get_attributions(x_t: torch.Tensor,
                      mt, 
                      class_num=1,
                      attr_methods = ['Gradient', 'IG', 'DeepLift', 'SHAP', 'CD', 'InputXGradient'],
-                     device='cuda'):
+                     device='cuda',
+                     sweep_dim=2):
     '''Returns attribution maps in a dictionary for different attribution methods
 
     Params
@@ -44,14 +45,34 @@ def get_attributions(x_t: torch.Tensor,
     for name in attr_methods:
         func = attr_funcs_dict[name]
         if name == 'CD':
-            with torch.no_grad():
-                sweep_dim = 1
-                tiles = acd.tiling_2d.gen_tiles(x_t[0,0,...,0], fill=0, method='cd', sweep_dim=sweep_dim)
-                if x_t.shape[-1] == 2: # check for imaginary representations
-                    tiles = np.repeat(np.expand_dims(tiles, axis=-1), repeats=2, axis=3).squeeze()
-                tiles = torch.Tensor(tiles).unsqueeze(1)
-                attributions = acd.get_scores_2d(mt, method='cd', ims=tiles, im_torch=x_t)[..., class_num].T.reshape(-1, 28, 28).squeeze()
-                # attributions = score_funcs.get_scores_2d(mt, method='cd', ims=tiles, im_torch=x_t)[..., class_num].T.reshape(-1,28,28)
+            x_np = deepcopy(x_t).detach().cpu().numpy()
+            
+            # remove batch dim
+            if len(x_np.shape) > 3:
+                x_np = x_np[0]
+            
+            # transpose if needed
+            if x_np.shape[0] == 3 and len(x_np.shape) == 3:
+                x_np = x_np.transpose((1, 2, 0))
+                
+
+            # generate tiles (should be numpixel in attr map x 1 x R x C)
+            tiles = acd.tiling_2d.gen_tiles(x_np, fill=0, method='cd', sweep_dim=sweep_dim)
+            
+            # repeat tiles for channel dimension
+            tiles = torch.Tensor(tiles).unsqueeze(1)
+#             tiles = torch.Tensor(tiles).repeat((1, 3, 1, 1)) # could also try getting importance for diff color channels
+            
+#             print('x_t.shape', x_t.shape)
+#             print('tiles shapes', tiles.shape)
+            attributions = acd.get_scores_2d(mt, method='cd', ims=tiles, im_torch=x_t)[..., class_num].T
+#             print('cd attr.shape', attributions.shape)
+            
+            # reshape attrs to the current shape
+            D = x_t.shape[-1] // sweep_dim
+            attributions = attributions.reshape((D, D))
+            # .reshape(-1, 28, 28).squeeze()
+            # attributions = score_funcs.get_scores_2d(mt, method='cd', ims=tiles, im_torch=x_t)[..., class_num].T.reshape(-1,28,28)
         elif name == 'Gradient':
             mt(x_t)[0, class_num].backward() # calculate gradients
             attributions = viz.detach(x_t.grad)
