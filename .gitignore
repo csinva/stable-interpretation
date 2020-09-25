@@ -1,12 +1,9 @@
 **.ipynb_checkpoints
 **cache*
 **.pdf
-**figs*
 **.zip
-**.png
 **.npy
 **.pkl
-**.jpg
 **.tif
 **slurm*
 **logs*
